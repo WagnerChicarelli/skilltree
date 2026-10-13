@@ -1,4 +1,4 @@
-import { Download, RotateCcw, Search, Upload } from 'lucide-react'
+﻿import { Download, RotateCcw, Search, Upload } from 'lucide-react'
 
 interface ToolbarProps {
   query: string
@@ -18,10 +18,7 @@ export function Toolbar({
   return (
     <header className="toolbar">
       <div className="toolbar__brand">
-        <span className="toolbar__crest" aria-hidden="true">�o�</span>
         <div>
-          <h1>�?rvore de Skills</h1>
-          <p>Gestǜo individual de pontos por linha e patente</p>
         </div>
       </div>
 
