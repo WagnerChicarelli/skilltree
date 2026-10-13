@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { BuildState, BuildStats } from '../types'
 import { DEFAULT_BUILD_STATE, LINES, TIERS, makePurchaseKey } from '../data/skills'
 import {
-  DEFAULT_CONFIG,
   canBuy,
   canSell,
   computeStats,
@@ -98,17 +97,6 @@ export function useBuild() {
     setState(next)
   }, [])
 
-  const setConfig = useCallback(
-    (patch: Partial<Pick<BuildState, 'totalPoints' | 'sequential'>>) => {
-      setState((prev) => {
-        const merged = { ...prev, ...patch }
-        if (merged.totalPoints < 0) merged.totalPoints = 0
-        return merged
-      })
-    },
-    [],
-  )
-
   return {
     state,
     config,
@@ -118,10 +106,8 @@ export function useBuild() {
     sell,
     reset,
     replace,
-    setConfig,
     notice,
     clearNotice: () => notify(null),
     notify,
-    defaultConfig: DEFAULT_CONFIG,
   }
 }
