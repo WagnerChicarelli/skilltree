@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState, type ChangeEvent } from 'react'
 import { StatsPanel } from './components/StatsPanel'
 import { Toolbar } from './components/Toolbar'
-import { SkillTree, type FilterMode } from './components/SkillTree'
+import { SkillTree } from './components/SkillTree'
 import { DetailPanel } from './components/DetailPanel'
 import { ConfirmDialog } from './components/ConfirmDialog'
 import { useBuild } from './hooks/useBuild'
@@ -26,7 +26,6 @@ export default function App() {
   const [selectedLineId, setSelectedLineId] = useState<string | null>(null)
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState<FilterMode>('all')
   const [confirmReset, setConfirmReset] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -93,8 +92,6 @@ export default function App() {
       <Toolbar
         query={query}
         onQueryChange={setQuery}
-        filter={filter}
-        onFilterChange={setFilter}
         totalPoints={state.totalPoints}
         sequential={state.sequential}
         onConfigChange={setConfig}
@@ -112,7 +109,6 @@ export default function App() {
           selectedLineId={selectedLineId}
           selectedTierId={selectedTierId}
           query={query}
-          filter={filter}
           onSelectNode={handleSelectNode}
         />
         {selectedLineId && (

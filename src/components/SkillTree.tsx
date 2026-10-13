@@ -15,7 +15,7 @@ import {
   type ProgressConfig,
 } from '../logic/progression'
 
-export type FilterMode = 'all' | 'purchased' | 'available' | 'locked'
+
 
 type NodeState = 'purchased' | 'available' | 'unaffordable' | 'locked'
 
@@ -25,7 +25,6 @@ interface SkillTreeProps {
   selectedLineId: string | null
   selectedTierId: string | null
   query: string
-  filter: FilterMode
   onSelectNode: (lineId: string, tierId: string | null) => void
 }
 
@@ -55,7 +54,6 @@ export function SkillTree({
   selectedLineId,
   selectedTierId,
   query,
-  filter,
   onSelectNode,
 }: SkillTreeProps) {
   const lines = config.lines
@@ -172,32 +170,24 @@ export function SkillTree({
   )
 
   const isDimmed = useCallback(
-    (lineName: string, tierName: string, status: NodeState) => {
+    (lineName: string, tierName: string, _status: NodeState) => {
       if (normalizedQuery) {
         const matches =
           lineName.toLowerCase().includes(normalizedQuery) ||
           tierName.toLowerCase().includes(normalizedQuery)
         if (!matches) return true
       }
-      if (filter === 'all') return false
-      if (filter === 'purchased') return status !== 'purchased'
-      if (filter === 'available') return status !== 'available'
-      if (filter === 'locked') return status !== 'locked' && status !== 'unaffordable'
       return false
     },
-    [normalizedQuery, filter],
+    [normalizedQuery],
   )
 
   const isSummaryDimmed = useCallback(
-    (lineName: string, consumed: number, hasAvailable: boolean, hasLocked: boolean) => {
+    (lineName: string, _consumed: number, _hasAvailable: boolean, _hasLocked: boolean) => {
       if (normalizedQuery && !lineName.toLowerCase().includes(normalizedQuery)) return true
-      if (filter === 'all') return false
-      if (filter === 'purchased') return consumed === 0
-      if (filter === 'available') return !hasAvailable
-      if (filter === 'locked') return !hasLocked
       return false
     },
-    [normalizedQuery, filter],
+    [normalizedQuery],
   )
 
   const rootR = 44

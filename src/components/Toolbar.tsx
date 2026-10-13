@@ -1,19 +1,15 @@
 import { useState } from 'react'
 import {
   Download,
-  Filter,
   RotateCcw,
   Search,
   Settings,
   Upload,
 } from 'lucide-react'
-import type { FilterMode } from './SkillTree'
 
 interface ToolbarProps {
   query: string
   onQueryChange: (value: string) => void
-  filter: FilterMode
-  onFilterChange: (value: FilterMode) => void
   totalPoints: number
   sequential: boolean
   onConfigChange: (patch: { totalPoints?: number; sequential?: boolean }) => void
@@ -22,18 +18,9 @@ interface ToolbarProps {
   onResetClick: () => void
 }
 
-const FILTERS: { value: FilterMode; label: string }[] = [
-  { value: 'all', label: 'Todas' },
-  { value: 'purchased', label: 'Adquiridas' },
-  { value: 'available', label: 'Disponíveis' },
-  { value: 'locked', label: 'Bloqueadas' },
-]
-
 export function Toolbar({
   query,
   onQueryChange,
-  filter,
-  onFilterChange,
   totalPoints,
   sequential,
   onConfigChange,
@@ -65,20 +52,7 @@ export function Toolbar({
           />
         </label>
 
-        <label className="filter">
-          <Filter size={16} aria-hidden="true" />
-          <select
-            value={filter}
-            onChange={(event) => onFilterChange(event.target.value as FilterMode)}
-            aria-label="Filtrar por situação"
-          >
-            {FILTERS.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </label>
+
 
         <div className="toolbar__buttons">
           <button type="button" className="btn" onClick={onImportClick} title="Importar JSON">
