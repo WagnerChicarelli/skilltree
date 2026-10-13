@@ -18,10 +18,10 @@ export function Toolbar({
   return (
     <header className="toolbar">
       <div className="toolbar__brand">
-        <div>
+        <span className="toolbar__crest" aria-hidden="true">✦</span>
         </div>
-      </div>
-
+          <h1>Árvore de Skills</h1>
+          <p>Gestão individual de pontos por linha e patente</p>
       <div className="toolbar__actions">
         <label className="search">
           <Search size={16} aria-hidden="true" />
