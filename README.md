@@ -41,9 +41,10 @@ entre usuários — a aplicação é 100% estática e pode ser publicada no Verc
 - **Compra sequencial (padrão):** para adquirir uma patente é preciso ter as
   anteriores na mesma linha. Configurável no botão **Config.**
 
-O estado inicial da aplicação reproduz exatamente o exemplo da planilha:
-6 linhas com Novato, Conjurador e Feiticeiro completos, Místico e Ilusionista
-com Novato e Curandeiro com Novato + Aprendiz → 31.500 pontos, nível global 20.
+A aplicação inicia com a **árvore limpa** (nenhuma patente adquirida) e o
+orçamento total de 31.500 pontos. O exemplo da planilha de origem (Conjurador e
+Feiticeiro completos, etc. → 31.500 pontos, nível global 20) permanece disponível
+em `SPREADSHEET_EXAMPLE_PURCHASED` para referência/testes.
 
 ---
 
@@ -179,7 +180,8 @@ preservados).
 - `TIERS`: patentes e custos (`novato`, `aprendiz`, `adepto`, `especialista`, `mestre`).
 - `LINES`: linhas/classes (mantenha os `id` estáveis).
 - `TOTAL_POINTS`: orçamento total.
-- `DEFAULT_PURCHASED`: estado inicial (opcional).
+- `DEFAULT_PURCHASED`: estado inicial (vazio — árvore limpa).
+- `SPREADSHEET_EXAMPLE_PURCHASED`: exemplo da planilha (referência/testes).
 
 ### Descrições — `src/data/classDescriptions.ts`
 

@@ -48,12 +48,12 @@ export const LINES: LineDef[] = [
 export const TOTAL_POINTS = 31500
 
 /**
- * Estado inicial exatamente como consta na planilha de origem:
+ * Exemplo da planilha de origem (apenas referencia/testes):
  * 6 linhas com Novato; Conjurador e Feiticeiro completos (5 patentes);
  * Mistico e Ilusionista com Novato; Curandeiro com Novato+Aprendiz.
  * Total consumido = 31500 | Nivel global = 20.
  */
-export const DEFAULT_PURCHASED: string[] = [
+export const SPREADSHEET_EXAMPLE_PURCHASED: string[] = [
   'assassino:novato',
   'precursor:novato',
   'espiao:novato',
@@ -75,6 +75,13 @@ export const DEFAULT_PURCHASED: string[] = [
   'curandeiro:novato',
   'curandeiro:aprendiz',
 ]
+
+/**
+ * Estado inicial da aplicacao: arvore limpa, sem nenhuma patente adquirida.
+ * O usuario monta a configuracao do zero. O exemplo da planilha permanece
+ * disponivel em `SPREADSHEET_EXAMPLE_PURCHASED`.
+ */
+export const DEFAULT_PURCHASED: string[] = []
 
 export const TREE: TreeData = {
   totalPoints: TOTAL_POINTS,

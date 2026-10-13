@@ -8,10 +8,10 @@ import {
   lineLevelName,
   type ProgressConfig,
 } from '../progression'
-import { DEFAULT_BUILD_STATE, makePurchaseKey } from '../../data/skills'
+import { SPREADSHEET_EXAMPLE_PURCHASED, makePurchaseKey } from '../../data/skills'
 
 const config = DEFAULT_CONFIG
-const defaultSet = new Set(DEFAULT_BUILD_STATE().purchased)
+const defaultSet = new Set(SPREADSHEET_EXAMPLE_PURCHASED)
 
 const sequentialConfig: ProgressConfig = {
   tiers: [
