@@ -17,7 +17,6 @@ export default function App() {
     sell,
     reset,
     replace,
-    setConfig,
     notice,
     clearNotice,
     notify,
@@ -92,9 +91,6 @@ export default function App() {
       <Toolbar
         query={query}
         onQueryChange={setQuery}
-        totalPoints={state.totalPoints}
-        sequential={state.sequential}
-        onConfigChange={setConfig}
         onExport={handleExport}
         onImportClick={handleImportClick}
         onResetClick={() => setConfirmReset(true)}
