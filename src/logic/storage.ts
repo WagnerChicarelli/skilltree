@@ -1,4 +1,4 @@
-import type { BuildFile, BuildState } from '../types'
+import type { BuildFile, BuildState, StatusPoints } from '../types'
 import {
   DEFAULT_BUILD_STATE,
   LINES,
@@ -23,7 +23,18 @@ function tierCost(tierId: string): number | undefined {
   return TIERS.find((tier) => tier.id === tierId)?.cost
 }
 
-/** Soma consumida por uma lista de chaves (ignorando invalidas). */
+function normalizeStatusPoints(value: unknown): StatusPoints {
+  const base: StatusPoints = { life: 0, mana: 0, stamina: 0 }
+  if (!isRecord(value)) return base
+  for (const key of ['life', 'mana', 'stamina'] as const) {
+    const v = value[key]
+    if (typeof v === 'number' && Number.isFinite(v) && v >= 0 && Math.floor(v) === v) {
+      base[key] = v
+    }
+  }
+  return base
+}
+
 function consumedOf(keys: string[]): number {
   let total = 0
   for (const key of keys) {
@@ -35,10 +46,32 @@ function consumedOf(keys: string[]): number {
   return total
 }
 
-/**
- * Valida e normaliza um objeto vindo de importacao/armazenamento.
- * Lanca `Error` com mensagem amigavel quando a estrutura for invalida.
- */
+function findSequentialGap(
+  purchased: string[],
+): { lineName: string; tierName: string } | null {
+  const byLine = new Map<string, Set<string>>()
+  for (const key of purchased) {
+    const parsed = parsePurchaseKey(key)
+    if (!parsed) continue
+    if (!byLine.has(parsed.lineId)) byLine.set(parsed.lineId, new Set())
+    byLine.get(parsed.lineId)!.add(parsed.tierId)
+  }
+
+  for (const [lineId, tierIds] of byLine) {
+    for (const tier of TIERS) {
+      if (!tierIds.has(tier.id)) continue
+      const previous = TIERS.filter((t) => t.order < tier.order)
+      for (const prev of previous) {
+        if (!tierIds.has(prev.id)) {
+          const lineName = LINES.find((l) => l.id === lineId)?.name ?? lineId
+          return { lineName, tierName: tier.name }
+        }
+      }
+    }
+  }
+  return null
+}
+
 export function validateBuildFile(input: unknown): ValidationResult {
   if (!isRecord(input)) {
     throw new Error('Arquivo inválido: o conteúdo não é um objeto JSON.')
@@ -101,37 +134,12 @@ export function validateBuildFile(input: unknown): ValidationResult {
     }
   }
 
+  const statusPoints = normalizeStatusPoints((input as any).statusPoints)
+
   return {
-    state: { totalPoints, sequential, purchased },
+    state: { totalPoints, sequential, purchased, statusPoints },
     warnings,
   }
-}
-
-/** Detecta lacunas quando o modo sequencial esta ativo. */
-function findSequentialGap(
-  purchased: string[],
-): { lineName: string; tierName: string } | null {
-  const byLine = new Map<string, Set<string>>()
-  for (const key of purchased) {
-    const parsed = parsePurchaseKey(key)
-    if (!parsed) continue
-    if (!byLine.has(parsed.lineId)) byLine.set(parsed.lineId, new Set())
-    byLine.get(parsed.lineId)!.add(parsed.tierId)
-  }
-
-  for (const [lineId, tierIds] of byLine) {
-    for (const tier of TIERS) {
-      if (!tierIds.has(tier.id)) continue
-      const previous = TIERS.filter((t) => t.order < tier.order)
-      for (const prev of previous) {
-        if (!tierIds.has(prev.id)) {
-          const lineName = LINES.find((l) => l.id === lineId)?.name ?? lineId
-          return { lineName, tierName: tier.name }
-        }
-      }
-    }
-  }
-  return null
 }
 
 export function toBuildFile(state: BuildState): BuildFile {
@@ -140,6 +148,7 @@ export function toBuildFile(state: BuildState): BuildFile {
     totalPoints: state.totalPoints,
     sequential: state.sequential,
     purchased: [...state.purchased].sort(),
+    statusPoints: state.statusPoints ?? { life: 0, mana: 0, stamina: 0 },
   }
 }
 
@@ -147,7 +156,6 @@ export function serialize(state: BuildState): string {
   return JSON.stringify(toBuildFile(state), null, 2)
 }
 
-/** Converte texto JSON em estado validado. Lanca Error em caso de falha. */
 export function importFromText(text: string): ValidationResult {
   let parsed: unknown
   try {
@@ -157,10 +165,6 @@ export function importFromText(text: string): ValidationResult {
   }
   return validateBuildFile(parsed)
 }
-
-// ---------------------------------------------------------------------------
-// Persistencia local (localStorage do navegador do usuario)
-// ---------------------------------------------------------------------------
 
 function getStorage(): Storage | null {
   try {

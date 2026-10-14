@@ -1,6 +1,10 @@
-﻿import { Download, RotateCcw, Search, Upload } from 'lucide-react'
+import { Download, RotateCcw, Search, Upload, Swords, Heart } from 'lucide-react'
+
+export type ViewMode = 'tree' | 'status'
 
 interface ToolbarProps {
+  view: ViewMode
+  onViewChange: (view: ViewMode) => void
   query: string
   onQueryChange: (value: string) => void
   onExport: () => void
@@ -9,6 +13,8 @@ interface ToolbarProps {
 }
 
 export function Toolbar({
+  view,
+  onViewChange,
   query,
   onQueryChange,
   onExport,
@@ -18,10 +24,10 @@ export function Toolbar({
   return (
     <header className="toolbar">
       <div className="toolbar__brand">
-        <span className="toolbar__crest" aria-hidden="true">Ô£ª</span>
+        <span className="toolbar__crest" aria-hidden="true">✦</span>
         <div>
-          <h1>├ürvore de Skills</h1>
-          <p>Gest├úo individual de pontos por linha e patente</p>
+          <h1>Árvore de Skills</h1>
+          <p>Gestão individual de pontos por linha e patente</p>
         </div>
       </div>
 
@@ -34,10 +40,29 @@ export function Toolbar({
             onChange={(event) => onQueryChange(event.target.value)}
             placeholder="Buscar linha ou patente..."
             aria-label="Buscar linha ou patente"
+            disabled={view !== 'tree'}
           />
         </label>
 
         <div className="toolbar__buttons">
+          <button
+            type="button"
+            className={tn }
+            onClick={() => onViewChange('tree')}
+            title="Árvore de Habilidades"
+          >
+            <Swords size={16} aria-hidden="true" />
+            <span>Árvore</span>
+          </button>
+          <button
+            type="button"
+            className={tn }
+            onClick={() => onViewChange('status')}
+            title="Status Node"
+          >
+            <Heart size={16} aria-hidden="true" />
+            <span>Status Node</span>
+          </button>
           <button type="button" className="btn" onClick={onImportClick} title="Importar JSON">
             <Upload size={16} aria-hidden="true" />
             <span>Importar</span>

@@ -105,11 +105,15 @@ export const VALID_KEYS: Set<string> = new Set(
   LINES.flatMap((line) => TIERS.map((tier) => makePurchaseKey(line.id, tier.id))),
 )
 
+export const STATUS_BASE = 100
+export const STATUS_PER_POINT = 25
+
 export function DEFAULT_BUILD_STATE(): BuildState {
   return {
     totalPoints: TOTAL_POINTS,
     sequential: true,
     purchased: [...DEFAULT_PURCHASED],
+    statusPoints: { life: 0, mana: 0, stamina: 0 },
   }
 }
 

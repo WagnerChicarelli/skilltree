@@ -34,11 +34,19 @@ export interface TreeData {
 /** Chave estavel de uma patente adquirida: `lineId:tierId`. */
 export type PurchaseKey = string
 
+export interface StatusPoints {
+  life: number
+  mana: number
+  stamina: number
+}
+
 export interface BuildState {
   totalPoints: number
   sequential: boolean
   /** Lista de chaves adquiridas (`lineId:tierId`). */
   purchased: PurchaseKey[]
+  /** Pontos investidos em atributos (Status Node). */
+  statusPoints?: StatusPoints
 }
 
 export interface BuildStats {
@@ -57,4 +65,5 @@ export interface BuildFile {
   totalPoints: number
   sequential: boolean
   purchased: PurchaseKey[]
+  statusPoints?: StatusPoints
 }

@@ -1,5 +1,5 @@
-import type { ActionCheck, BuildStats, TierDef } from '../types'
-import { makePurchaseKey, parsePurchaseKey, TREE } from '../data/skills'
+import type { ActionCheck, BuildStats, StatusPoints, TierDef } from '../types'
+import { makePurchaseKey, parsePurchaseKey, STATUS_BASE, STATUS_PER_POINT, TREE } from '../data/skills'
 
 export interface ProgressConfig {
   tiers: TierDef[]
@@ -171,5 +171,42 @@ export function canSell(
     }
   }
 
+  return { ok: true }
+}
+export function getStatusPoints(statusPoints: StatusPoints | undefined): StatusPoints {
+  return statusPoints ?? { life: 0, mana: 0, stamina: 0 }
+}
+export function statusPointsInvested(statusPoints: StatusPoints | undefined): number {
+  const sp = getStatusPoints(statusPoints)
+  return sp.life + sp.mana + sp.stamina
+}
+export function statusPointsAvailable(globalLevel: number, statusPoints: StatusPoints | undefined): number {
+  const invested = statusPointsInvested(statusPoints)
+  const available = globalLevel - invested
+  return available < 0 ? 0 : available
+}
+export function lifeTotal(statusPoints: StatusPoints | undefined): number {
+  const sp = getStatusPoints(statusPoints)
+  return STATUS_BASE + sp.life * STATUS_PER_POINT
+}
+export function manaTotal(statusPoints: StatusPoints | undefined): number {
+  const sp = getStatusPoints(statusPoints)
+  return STATUS_BASE + sp.mana * STATUS_PER_POINT
+}
+export function staminaTotal(statusPoints: StatusPoints | undefined): number {
+  const sp = getStatusPoints(statusPoints)
+  return STATUS_BASE + sp.stamina * STATUS_PER_POINT
+}
+export type StatusActionAttr = "life" | "mana" | "stamina"
+export function canAddStatusPoint(globalLevel: number, statusPoints: StatusPoints | undefined, _attr: StatusActionAttr): ActionCheck {
+  const available = statusPointsAvailable(globalLevel, statusPoints)
+  if (available <= 0) return { ok: false, reason: "Sem pontos disponíveis." }
+  return { ok: true }
+}
+export function canRemoveStatusPoint(statusPoints: StatusPoints | undefined, attr: StatusActionAttr): ActionCheck {
+  const sp = getStatusPoints(statusPoints)
+  if (attr === "life") { if (sp.life <= 0) return { ok: false, reason: "Não há pontos para remover." } }
+  if (attr === "mana") { if (sp.mana <= 0) return { ok: false, reason: "Não há pontos para remover." } }
+  if (attr === "stamina") { if (sp.stamina <= 0) return { ok: false, reason: "Não há pontos para remover." } }
   return { ok: true }
 }
