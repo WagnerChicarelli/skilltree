@@ -2,10 +2,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { BuildState, BuildStats } from '../types'
 import { DEFAULT_BUILD_STATE, LINES, TIERS, makePurchaseKey } from '../data/skills'
 import {
+  canAddStatusPoint,
   canBuy,
+  canRemoveStatusPoint,
   canSell,
   computeStats,
+  getStatusPoints,
+  statusPointsAvailable,
+  statusPointsInvested,
   type ProgressConfig,
+  type StatusActionAttr,
 } from '../logic/progression'
 import { loadFromStorage, saveToStorage } from '../logic/storage'
 
@@ -30,6 +36,10 @@ export function useBuild() {
   )
 
   const stats: BuildStats = useMemo(() => computeStats(config, purchased), [config, purchased])
+
+  const statusPoints = getStatusPoints(state.statusPoints)
+  const statusInvested = statusPointsInvested(state.statusPoints)
+  const statusAvailable = statusPointsAvailable(stats.globalLevel, state.statusPoints)
 
   const [notice, setNotice] = useState<Notice | null>(null)
   const noticeTimer = useRef<number | null>(null)
@@ -88,8 +98,44 @@ export function useBuild() {
     [config, purchased, notify],
   )
 
+  const addStatusPoint = useCallback(
+    (attr: StatusActionAttr): boolean => {
+      const check = canAddStatusPoint(stats.globalLevel, state.statusPoints, attr)
+      if (!check.ok) {
+        notify({ type: 'error', text: check.reason })
+        return false
+      }
+      setState((prev) => {
+        const sp = getStatusPoints(prev.statusPoints)
+        return { ...prev, statusPoints: { ...sp, [attr]: sp[attr] + 1 } }
+      })
+      return true
+    },
+    [stats.globalLevel, state.statusPoints, notify],
+  )
+
+  const removeStatusPoint = useCallback(
+    (attr: StatusActionAttr): boolean => {
+      const check = canRemoveStatusPoint(state.statusPoints, attr)
+      if (!check.ok) {
+        notify({ type: 'error', text: check.reason })
+        return false
+      }
+      setState((prev) => {
+        const sp = getStatusPoints(prev.statusPoints)
+        return { ...prev, statusPoints: { ...sp, [attr]: sp[attr] - 1 } }
+      })
+      return true
+    },
+    [state.statusPoints, notify],
+  )
+
   const reset = useCallback(() => {
-    setState((prev) => ({ ...prev, purchased: [] }))
+    setState((prev) => ({
+      ...prev,
+      purchased: [],
+      statusPoints: { life: 0, mana: 0, stamina: 0 },
+    }))
     notify({ type: 'success', text: 'Configuração reiniciada.' })
   }, [notify])
 
@@ -102,8 +148,13 @@ export function useBuild() {
     config,
     purchased,
     stats,
+    statusPoints,
+    statusInvested,
+    statusAvailable,
     buy,
     sell,
+    addStatusPoint,
+    removeStatusPoint,
     reset,
     replace,
     notice,

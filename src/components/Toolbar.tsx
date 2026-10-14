@@ -47,7 +47,7 @@ export function Toolbar({
         <div className="toolbar__buttons">
           <button
             type="button"
-            className={tn }
+            className={`btn ${view === 'tree' ? 'btn--primary' : 'btn--ghost'}`}
             onClick={() => onViewChange('tree')}
             title="Árvore de Habilidades"
           >
@@ -56,7 +56,7 @@ export function Toolbar({
           </button>
           <button
             type="button"
-            className={tn }
+            className={`btn ${view === 'status' ? 'btn--primary' : 'btn--ghost'}`}
             onClick={() => onViewChange('status')}
             title="Status Node"
           >

@@ -830,6 +830,186 @@ h3 {
   border-color: var(--gold);
 }
 
+/* Status node ----------------------------------------------------- */
+
+.status-node {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 26px clamp(18px, 4vw, 44px) 40px;
+  background-image: radial-gradient(circle at 50% 0%, rgba(65, 181, 130, 0.08), transparent 60%);
+}
+
+.status-node__head {
+  max-width: 640px;
+}
+
+.status-node__eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--parchment-dim);
+}
+
+.status-node__head h2 {
+  font-size: 1.8rem;
+  color: var(--gold-bright);
+  text-shadow: 0 1px 0 #000;
+}
+
+.status-node__hint {
+  margin: 8px 0 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--parchment-dim);
+}
+
+.status-node__hint strong {
+  color: var(--gold-bright);
+}
+
+.status-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 22px 0 26px;
+}
+
+.status-summary__pool {
+  display: flex;
+  flex-direction: column-reverse;
+  min-width: 180px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(217, 184, 92, 0.55);
+  background: rgba(23, 52, 34, 0.55);
+}
+
+.status-summary__pool--muted {
+  border-color: rgba(90, 120, 95, 0.35);
+  background: rgba(8, 16, 11, 0.55);
+}
+
+.status-summary__value {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gold-bright);
+}
+
+.status-summary__pool--muted .status-summary__value {
+  color: var(--parchment);
+}
+
+.status-summary__label {
+  margin-top: 6px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--parchment-dim);
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  max-width: 900px;
+}
+
+.status-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+}
+
+.status-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-card__head h3 {
+  font-size: 1.15rem;
+  color: var(--parchment);
+}
+
+.status-card__icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--panel-border);
+  background: rgba(8, 16, 11, 0.85);
+}
+
+.status-card--life .status-card__icon {
+  color: var(--danger);
+  border-color: rgba(207, 106, 76, 0.6);
+}
+
+.status-card--mana .status-card__icon {
+  color: #6ea8d8;
+  border-color: rgba(110, 168, 216, 0.6);
+}
+
+.status-card--stamina .status-card__icon {
+  color: var(--emerald);
+  border-color: rgba(65, 181, 130, 0.6);
+}
+
+.status-card__total {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.status-card__total-value {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gold-bright);
+}
+
+.status-card__total-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--parchment-dim);
+}
+
+.status-card__stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status-card__allocated {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--parchment);
+}
+
+.status-card__formula {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--parchment-dim);
+}
+
 /* Responsive ------------------------------------------------------ */
 
 @media (max-width: 860px) {

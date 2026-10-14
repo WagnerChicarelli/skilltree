@@ -1,8 +1,9 @@
 import { useCallback, useRef, useState, type ChangeEvent } from 'react'
 import { StatsPanel } from './components/StatsPanel'
-import { Toolbar } from './components/Toolbar'
+import { Toolbar, type ViewMode } from './components/Toolbar'
 import { SkillTree } from './components/SkillTree'
 import { DetailPanel } from './components/DetailPanel'
+import { StatusNode } from './components/StatusNode'
 import { ConfirmDialog } from './components/ConfirmDialog'
 import { useBuild } from './hooks/useBuild'
 import { importFromText, serialize } from './logic/storage'
@@ -20,8 +21,12 @@ export default function App() {
     notice,
     clearNotice,
     notify,
+    statusPoints,
+    addStatusPoint,
+    removeStatusPoint,
   } = useBuild()
 
+  const [view, setView] = useState<ViewMode>('tree')
   const [selectedLineId, setSelectedLineId] = useState<string | null>(null)
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
@@ -89,6 +94,8 @@ export default function App() {
   return (
     <div className="app">
       <Toolbar
+        view={view}
+        onViewChange={setView}
         query={query}
         onQueryChange={setQuery}
         onExport={handleExport}
@@ -99,27 +106,38 @@ export default function App() {
       <StatsPanel stats={stats} totalPoints={state.totalPoints} />
 
       <main className="workspace">
-        <SkillTree
-          config={config}
-          purchased={purchased}
-          selectedLineId={selectedLineId}
-          selectedTierId={selectedTierId}
-          query={query}
-          onSelectNode={handleSelectNode}
-        />
-        {selectedLineId && (
-          <DetailPanel
-            lineId={selectedLineId}
-            selectedTierId={selectedTierId}
-            config={config}
-            purchased={purchased}
-            onBuy={buy}
-            onSell={sell}
-            onClose={() => {
-              setSelectedLineId(null)
-              setSelectedTierId(null)
-            }}
+        {view === 'status' ? (
+          <StatusNode
+            globalLevel={stats.globalLevel}
+            statusPoints={statusPoints}
+            onAdd={addStatusPoint}
+            onRemove={removeStatusPoint}
           />
+        ) : (
+          <>
+            <SkillTree
+              config={config}
+              purchased={purchased}
+              selectedLineId={selectedLineId}
+              selectedTierId={selectedTierId}
+              query={query}
+              onSelectNode={handleSelectNode}
+            />
+            {selectedLineId && (
+              <DetailPanel
+                lineId={selectedLineId}
+                selectedTierId={selectedTierId}
+                config={config}
+                purchased={purchased}
+                onBuy={buy}
+                onSell={sell}
+                onClose={() => {
+                  setSelectedLineId(null)
+                  setSelectedTierId(null)
+                }}
+              />
+            )}
+          </>
         )}
       </main>
 
