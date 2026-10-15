@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, type ChangeEvent } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { StatsPanel } from './components/StatsPanel'
 import { Toolbar, type ViewMode } from './components/Toolbar'
 import { SkillTree } from './components/SkillTree'
@@ -173,6 +174,8 @@ export default function App() {
           </button>
         </div>
       )}
+
+      <Analytics />
     </div>
   )
 }
